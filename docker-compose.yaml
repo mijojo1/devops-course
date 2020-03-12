@@ -1,0 +1,21 @@
+version: "3"
+services: 
+        master:
+                image: mijojo/puppet:puppetmaster
+                extra_hosts:
+                        master.demo.com: 172.26.0.2
+                        agent.demo.com: 172.26.0.3
+                command: service puppetmaster start
+                command: tail -f /dev/null
+
+                tty: true        
+        agent:
+                image: mijojo/puppet:puppetagent
+                depends_on:
+                        - master
+                tty: true
+                extra_hosts:
+                        master.demo.com: 172.26.0.2
+                        agent.demo.com: 172.26.0.3
+                
+

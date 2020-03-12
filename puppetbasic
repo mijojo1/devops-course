@@ -1,0 +1,83 @@
+
+docker run --name puppetmaster -it devops/puppet bash
+docker run --name puppetagent -it devops/puppet bash
+
+vi etc/sysconfig/network
+
+update for master and agent
+
+hostname:master.demo.com
+hostname: agent.demo.com
+
+update for both sites
+
+vi etc/hosts
+
+
+'ipmaster'    master.demo.com
+'ipagent'     agent.demo.com
+
+test with ping master.demo.com
+
+in the master install
+
+yum install -y puppet puppet-server facter
+
+in the slave install
+
+
+yum install -y puppet facter
+
+
+update puppetmaster and slave conf
+
+vi /etc/puppet/puppet.conf
+
+addd before ssldir
+
+certname = master.demo.com
+
+in slave add
+
+server= master.demo.com
+
+service puppetmaster start
+
+in the slave
+
+puppet agent --test --server=master.demo.com --waitforcert=50
+
+in the master
+
+puppet cert list
+
+puppet cert sign 'cert'
+
+in slave the cert must be signed
+
+____
+
+create site.pp in etc/puppet/manifest
+
+file {"/var/tmp/testfile":
+	ensure => "present",
+	owner => "root",
+	group => "root",
+	mode => "664",
+	content => "this is a test file from master",
+}
+ _____________
+in slave 
+puppet agent --test
+
+site.pp must be there with the message
+
+
+
+
+
+
+
+
+
+
